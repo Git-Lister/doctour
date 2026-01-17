@@ -1,0 +1,80 @@
+{
+  "_metadata": {
+    "version": "0.1.0",
+    "last_updated": "2026-01-17",
+    "description": "Toxic substances and dangerous practices blocklist for Doctour safety system"
+  },
+  "toxic_substances": {
+    "mercury": {
+      "status": "blocked",
+      "reason": "Heavy metal poisoning, neurological damage",
+      "severity": "critical"
+    },
+    "hemlock": {
+      "status": "blocked",
+      "reason": "Lethal neurotoxin (contains coniine)",
+      "severity": "critical"
+    },
+    "arsenic": {
+      "status": "blocked",
+      "reason": "Carcinogen, acute toxicity",
+      "severity": "critical"
+    },
+    "lead": {
+      "status": "blocked",
+      "reason": "Heavy metal poisoning, neurotoxicity",
+      "severity": "critical"
+    },
+    "belladonna": {
+      "status": "restricted",
+      "reason": "Contains atropine, can cause delirium and death in high doses",
+      "severity": "high",
+      "safe_use": "Only in professionally prepared homeopathic dilutions"
+    },
+    "foxglove": {
+      "status": "restricted",
+      "reason": "Contains digitalis, cardiac toxicity",
+      "severity": "high",
+      "safe_use": "Modern pharmaceutical preparations only (digoxin)"
+    },
+    "wolfsbane": {
+      "status": "blocked",
+      "reason": "Contains aconitine, rapid cardiac arrest",
+      "severity": "critical"
+    },
+    "mandrake": {
+      "status": "restricted",
+      "reason": "Contains tropane alkaloids, hallucinogenic and toxic",
+      "severity": "high"
+    }
+  },
+  "dangerous_practices": {
+    "bloodletting": {
+      "status": "blocked",
+      "reason": "Can cause anemia, shock, infection",
+      "historical_note": "Common medieval practice, now understood to be harmful"
+    },
+    "trepanation": {
+      "status": "blocked",
+      "reason": "Skull drilling - risk of infection, brain damage, death",
+      "severity": "critical"
+    },
+    "purging": {
+      "status": "restricted",
+      "reason": "Severe purging can cause dehydration and electrolyte imbalance",
+      "safe_use": "Mild laxatives under medical supervision only"
+    }
+  },
+  "emergency_symptoms": [
+    "chest pain",
+    "difficulty breathing",
+    "severe headache with vision changes",
+    "loss of consciousness",
+    "severe bleeding",
+    "suspected poisoning",
+    "severe abdominal pain",
+    "seizures",
+    "stroke symptoms",
+    "allergic reaction with swelling"
+  ]
+}
