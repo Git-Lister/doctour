@@ -1,0 +1,24 @@
+CORPUS LANGUAGE ANALYSIS REPORT
+======================================================================
+
+EN: 19 files
+  - Canon-of-Medicine - Latin.txt
+  - Canteburry Tales complete.txt
+  - canterbury-taleso-chaucer.txt
+  - CONFESSIO AMANTIS- GOWER'S CONFESSION OF A LOVER.txt
+  - Dioscorides_De_Materia_Medica_2000_English.txt
+  - Extrasensory_Perception_Research_Finding.txt
+  - Galen-On-Natural-Faculties(alternate-version 2).txt
+  - Galen-On-Natural-Faculties- The-Loeb-Classical-Library.txt
+  - Galen-OnNatural-Faculties(alternate-version 3).txt
+  - Genuine-Works-of-Hippocrates-Francis Adams LL.D.txt
+  - John of Arderne Fistula.txt
+  - Olsen-Cleanness-Diplomatic-Edition-Text.txt
+  - Ornatis Vir - Latin.txt
+  - RERUM BRITANNICARUM MEDII jEVI.txt
+  - Revelations-of-Divine-Love - Juliana.txt
+  - The Canon of Medicine, Volume 1.txt
+  - The Canon of Medicine, Volume 2.txt
+  - The Canon of Medicine, Volume 3.txt
+  - The Canon of Medicine, Volume 4.txt
+
