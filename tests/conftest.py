@@ -18,39 +18,39 @@ def test_data_dir():
 def mock_safety_blocklist(tmp_path_factory):
     """Create a mock safety blocklist for testing."""
     import json
-    
+
     blocklist = {
         "blocked_substances": [
             "arsenic",
             "mercury",
             "lead",
-            "cyanide"
+            "cyanide",
         ],
         "warning_substances": [
             "belladonna",
             "hemlock",
-            "wolfsbane"
-        ]
+            "wolfsbane",
+        ],
     }
-    
+
     temp_dir = tmp_path_factory.mktemp("test_data")
     blocklist_file = temp_dir / "safety_blocklist.json"
-    
-    with open(blocklist_file, 'w') as f:
+
+    with open(blocklist_file, "w", encoding="utf-8") as f:
         json.dump(blocklist, f)
-    
+
     return blocklist_file
 
 
 @pytest.fixture
 def mock_config(mock_safety_blocklist):
     """Provide mock configuration for testing."""
-    from doctour.config import Config
-    
-    return Config(
+    from doctour.config import DoctourConfig
+
+    # Only pass arguments that actually exist on DoctourConfig
+    return DoctourConfig(
         model_name="test-model",
         safety_blocklist_path=mock_safety_blocklist,
-        log_level="DEBUG"
     )
 
 
@@ -61,16 +61,16 @@ def sample_historical_texts():
         {
             "text": "Chamomile is good for calming the stomach and aiding sleep.",
             "source": "Mock Herbal",
-            "date": "1400"
+            "date": "1400",
         },
         {
             "text": "Lavender oil soothes headaches and nervous tension.",
             "source": "Mock Pharmacopoeia",
-            "date": "1395"
+            "date": "1395",
         },
         {
             "text": "Peppermint aids digestion and relieves nausea.",
             "source": "Mock Medical Text",
-            "date": "1410"
-        }
+            "date": "1410",
+        },
     ]
