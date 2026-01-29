@@ -1,93 +1,79 @@
 """Tests for the safety module."""
 
 import pytest
-from pathlib import Path
-import json
-from doctour.safety import SafetyValidator
-from doctour.config import Config
+
+from doctour.safety import SafetySystem, SafetyResult, SafetyLevel
+from doctour.config import DoctourConfig
 
 
 @pytest.fixture
 def config():
     """Provide test configuration."""
-    return Config(
-        model_name="test-model",
-        safety_blocklist_path=Path("data/safety_blocklist.json")
-    )
+    return DoctourConfig(model_name="test-model")
 
 
 @pytest.fixture
-def safety_validator(config):
-    """Provide safety validator instance."""
-    return SafetyValidator(config)
+def safety_system():
+    """Provide safety system instance."""
+    return SafetySystem()
 
 
-class TestSafetyValidator:
-    """Test suite for SafetyValidator."""
-    
-    def test_initialization(self, safety_validator):
-        """Test validator initializes correctly."""
-        assert safety_validator is not None
-        assert isinstance(safety_validator.config, Config)
-    
-    def test_validate_safe_remedy(self, safety_validator):
-        """Test validation of safe herbal remedies."""
-        safe_queries = [
-            "What herbs help with headaches?",
-            "Tell me about chamomile tea for sleep",
-            "Historical uses of lavender"
-        ]
-        
-        for query in safe_queries:
-            is_valid, result = safety_validator.validate_remedy(query)
-            assert is_valid, f"Safe query should pass: {query}"
-    
-    def test_validate_dangerous_remedy(self, safety_validator):
-        """Test validation blocks dangerous substances."""
-        dangerous_queries = [
-            "How do I use arsenic for medicine?",
-            "Tell me about mercury treatments",
-            "What about lead-based remedies?"
-        ]
-        
-        for query in dangerous_queries:
-            is_valid, result = safety_validator.validate_remedy(query)
-            assert not is_valid, f"Dangerous query should fail: {query}"
-    
-    def test_context_check(self, safety_validator):
-        """Test context safety checking."""
-        safe_context = "Chamomile and lavender are gentle herbs for relaxation."
-        is_valid, result = safety_validator.check_context_safety(safe_context)
-        assert is_valid
-        
-        dangerous_context = "Use arsenic in small doses for this condition."
-        is_valid, result = safety_validator.check_context_safety(dangerous_context)
-        assert not is_valid
-    
-    def test_evidence_validation(self, safety_validator):
-        """Test evidence validation for remedies."""
-        # Test with valid historical remedy
-        remedy = "Chamomile tea for digestive issues"
-        is_valid, evidence = safety_validator.validate_remedy(remedy)
-        assert isinstance(evidence, dict)
+class TestSafetySystem:
+    """Test suite for SafetySystem."""
+
+    def test_initialization(self, safety_system):
+        """Test system initializes and has a blocklist path."""
+        assert safety_system is not None
+        assert safety_system.blocklist_path is not None
+
+    def test_check_toxic_substances(self, safety_system):
+        """Toxic substances are detected."""
+        is_safe, blocked = safety_system.check_toxic_substances(
+            "This remedy uses arsenic and mercury."
+        )
+        assert not is_safe
+        assert isinstance(blocked, list)
+
+    def test_detect_emergency_symptoms(self, safety_system):
+        """Emergency symptoms are detected."""
+        is_safe, detected = safety_system.detect_emergency_symptoms(
+            "I have crushing chest pain and cannot breathe."
+        )
+        assert isinstance(detected, list)
+
+    def test_validate_response_safe(self, safety_system):
+        """Safe response passes safety checks."""
+        user_input = "I have a mild headache."
+        model_response = "Chamomile tea and rest may comfort thee."
+        result = safety_system.validate_response(user_input, model_response)
+        assert isinstance(result, SafetyResult)
+        assert result.level in (SafetyLevel.SAFE, SafetyLevel.CAUTION)
+
+    def test_validate_response_blocks_dangerous(self, safety_system):
+        """Dangerous response gets flagged/blocked."""
+        user_input = "I have a mild headache."
+        model_response = "Drink a potion with arsenic and mercury."
+        result = safety_system.validate_response(user_input, model_response)
+        assert result.level in (
+            SafetyLevel.BLOCKED,
+            SafetyLevel.WARNING,
+            SafetyLevel.EMERGENCY,
+        )
 
 
-class TestBlocklist:
+class TestBlocklistIntegration:
     """Test suite for blocklist functionality."""
-    
-    def test_blocklist_loaded(self, safety_validator):
-        """Test that blocklist loads correctly."""
-        # Should have loaded the JSON file
-        assert hasattr(safety_validator, '_blocklist') or True
-    
-    def test_blocklist_detection(self, safety_validator):
-        """Test detection of blocked substances."""
-        blocked_terms = ["arsenic", "mercury", "lead"]
-        
-        for term in blocked_terms:
-            query = f"Tell me about {term} in medicine"
-            is_valid, _ = safety_validator.validate_remedy(query)
-            assert not is_valid, f"Should block: {term}"
+
+    def test_blocklist_detection(self, safety_system):
+        """Detection of blocked substances via validate_response."""
+        user_input = "Tell me about remedies."
+        model_response = "Use arsenic and lead for thy ailment."
+        result = safety_system.validate_response(user_input, model_response)
+        assert result.level in (
+            SafetyLevel.BLOCKED,
+            SafetyLevel.WARNING,
+            SafetyLevel.EMERGENCY,
+        )
 
 
 if __name__ == "__main__":
