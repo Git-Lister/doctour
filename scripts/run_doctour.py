@@ -13,11 +13,12 @@ import argparse
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
-from doctour.config import Config
-from doctour.safety import SafetyValidator
+from doctour.config import DoctourConfig 
+from doctour.safety import SafetySystem   
 from doctour.rag import RAGSystem
 from doctour.model import DoctourModel
 from doctour.conversation import ConversationManager
+
 
 logging.basicConfig(
     level=logging.INFO,
@@ -65,13 +66,19 @@ def main():
     # Initialize components
     logger.info("Initializing Doctour...")
     
-    config = Config(
-        model_name=args.model if args.model else None
+    config = DoctourConfig(  
+        model_name=args.model or "mistral-7b-instruct"  # ✅ Always a string
     )
     
-    safety_validator = SafetyValidator(config)
-    rag_system = RAGSystem(config)
-    model = DoctourModel(config, safety_validator, rag_system)
+    safety_system = SafetySystem()  # ✅ FIX 2: Use SafetySystem() without config
+    # Initialize RAG system
+    rag_system = RAGSystem(
+    corpus_path=config.corpus_dir,
+    embeddings_path=Path("./data/embeddings"),
+    embedding_model=config.embedding_model,
+    top_k=config.top_k_retrieval
+)
+    model = DoctourModel(config, safety_system, rag_system)  # ✅ FIX 3: Use safety_system
     conversation_manager = ConversationManager()
     
     # Load model
